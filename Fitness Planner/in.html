@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Planner</title>
+      <link rel="icon" type="image/png" href="ico.png" />
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- jsPDF for PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles and Dark Mode Configuration -->
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Animation for generated plan cards */
+        .plan-card {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUpFadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes slideUpFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Staggered animation delay for cards */
+        .plan-card:nth-child(1) { animation-delay: 0.1s; }
+        .plan-card:nth-child(2) { animation-delay: 0.2s; }
+        .plan-card:nth-child(3) { animation-delay: 0.3s; }
+        .plan-card:nth-child(4) { animation-delay: 0.4s; }
+
+    </style>
+    
+    <script>
+        // Tailwind dark mode configuration
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            light: '#3b82f6',
+                            dark: '#60a5fa',
+                        },
+                        background: {
+                            light: '#f9fafb',
+                            dark: '#111827',
+                        },
+                        card: {
+                            light: '#ffffff',
+                            dark: '#1f2937',
+                        },
+                        text: {
+                            light: '#111827',
+                            dark: '#f9fafb',
+                        },
+                        muted: {
+                            light: '#6b7280',
+                            dark: '#9ca3af',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-300">
+
+    <!-- Main Container -->
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
+
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-primary-light dark:text-primary-dark">Fitness Planner</h1>
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <!-- Sun Icon -->
+                <svg id="theme-icon-light" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <!-- Moon Icon -->
+                <svg id="theme-icon-dark" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+            </button>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Left Column: Inputs and Progress Tracker -->
+            <div class="lg:col-span-1 space-y-8">
+                
+                <!-- Input Form -->
+                <div class="bg-card-light dark:bg-card-dark p-6 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold mb-4">Create Your Plan</h2>
+                    <form id="fitness-form" class="space-y-4">
+                        <div>
+                            <label for="goal" class="block text-sm font-medium text-muted-light dark:text-muted-dark mb-1">Fitness Goal</label>
+                            <select id="goal" class="w-full p-3 bg-background-light dark:bg-background-dark border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark outline-none">
+                                <option value="weight-loss">Weight Loss</option>
+                                <option value="muscle-gain">Muscle Gain</option>
+                                <option value="maintenance">Maintenance</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="experience" class="block text-sm font-medium text-muted-light dark:text-muted-dark mb-1">Experience Level</label>
+                            <select id="experience" class="w-full p-3 bg-background-light dark:bg-background-dark border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark outline-none">
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="days" class="block text-sm font-medium text-muted-light dark:text-muted-dark mb-1">Days per Week</label>
+                            <select id="days" class="w-full p-3 bg-background-light dark:bg-background-dark border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark outline-none">
+                                <option value="3">3 Days</option>
+                                <option value="4">4 Days</option>
+                                <option value="5">5 Days</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="food" class="block text-sm font-medium text-muted-light dark:text-muted-dark mb-1">Food Preference</label>
+                            <select id="food" class="w-full p-3 bg-background-light dark:bg-background-dark border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark outline-none">
+                                <option value="non-veg">Non-Vegetarian</option>
+                                <option value="veg">Vegetarian</option>
+                                <option value="vegan">Vegan</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-primary-light dark:bg-primary-dark text-white font-bold py-3 px-4 rounded-lg hover:opacity-90 transition-opacity transform hover:scale-105">
+                            Generate Plan
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Weekly Progress Tracker -->
+                <div class="bg-card-light dark:bg-card-dark p-6 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold mb-4">Track Your Progress</h2>
+                    <div class="space-y-4">
+                        <input id="progress-input" type="text" placeholder="e.g., 85.5 kg or Felt energetic" class="w-full p-3 bg-background-light dark:bg-background-dark border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark outline-none">
+                        <button id="log-progress-btn" class="w-full bg-gray-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors">
+                            Log Weekly Progress
+                        </button>
+                    </div>
+                    <div id="progress-logs" class="mt-6 space-y-2">
+                        <!-- Progress logs will be injected here -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Generated Plan -->
+            <div id="plan-output-container" class="lg:col-span-2 hidden">
+                <div class="space-y-8">
+                    <!-- Action Buttons -->
+                     <div id="action-buttons" class="flex flex-wrap gap-2">
+                        <button id="save-plan-btn" class="flex-1 bg-green-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-600 transition-colors text-sm">Save Plan</button>
+                        <button id="export-pdf-btn" class="flex-1 bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition-colors text-sm">Export as PDF</button>
+                        <button id="share-whatsapp-btn" class="flex-1 bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors text-sm">Share Plan</button>
+                    </div>
+                    
+                    <!-- Motivational Tip -->
+                    <div id="tip-output" class="plan-card bg-card-light dark:bg-card-dark p-6 rounded-2xl shadow-lg border-l-4 border-yellow-400"></div>
+                    
+                    <!-- Workout Plan -->
+                    <div id="workout-output" class="plan-card bg-card-light dark:bg-card-dark p-6 rounded-2xl shadow-lg"></div>
+
+                    <!-- Diet Plan -->
+                    <div id="diet-output" class="plan-card bg-card-light dark:bg-card-dark p-6 rounded-2xl shadow-lg"></div>
+                </div>
+            </div>
+            
+            <!-- Placeholder when no plan is generated -->
+            <div id="plan-placeholder" class="lg:col-span-2 flex items-center justify-center bg-card-light dark:bg-card-dark rounded-2xl shadow-lg p-8">
+                <div class="text-center">
+                    <svg class="mx-auto h-12 w-12 text-muted-light dark:text-muted-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <h3 class="mt-2 text-lg font-medium text-text-light dark:text-text-dark">Your personalized plan will appear here</h3>
+                    <p class="mt-1 text-sm text-muted-light dark:text-muted-dark">Fill out the form to get started on your fitness journey.</p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- DOM ELEMENT REFERENCES ---
+        const fitnessForm = document.getElementById('fitness-form');
+        const planOutputContainer = document.getElementById('plan-output-container');
+        const planPlaceholder = document.getElementById('plan-placeholder');
+        const workoutOutput = document.getElementById('workout-output');
+        const dietOutput = document.getElementById('diet-output');
+        const tipOutput = document.getElementById('tip-output');
+        const progressInput = document.getElementById('progress-input');
+        const logProgressBtn = document.getElementById('log-progress-btn');
+        const progressLogs = document.getElementById('progress-logs');
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIconLight = document.getElementById('theme-icon-light');
+        const themeIconDark = document.getElementById('theme-icon-dark');
+        const savePlanBtn = document.getElementById('save-plan-btn');
+        const exportPdfBtn = document.getElementById('export-pdf-btn');
+        const shareWhatsappBtn = document.getElementById('share-whatsapp-btn');
+
+        // --- AI SIMULATION DATA ---
+        const exercises = {
+            push: ['Bench Press', 'Overhead Press', 'Incline Dumbbell Press', 'Tricep Pushdowns', 'Lateral Raises'],
+            pull: ['Pull-ups', 'Barbell Rows', 'Face Pulls', 'Bicep Curls', 'Hammer Curls'],
+            legs: ['Squats', 'Deadlifts', 'Leg Press', 'Leg Curls', 'Calf Raises'],
+            fullBody: ['Squats', 'Bench Press', 'Barbell Rows', 'Overhead Press', 'Deadlifts', 'Bicep Curls']
+        };
+
+        const diet = {
+            'weight-loss': {
+                'veg': 'Focus on salads, lentils, tofu, paneer, and quinoa. Avoid sugary drinks and fried food.',
+                'non-veg': 'Lean protein like chicken breast, fish, and eggs. Pair with green vegetables. Limit carbs.',
+                'vegan': 'High-protein plant sources like lentils, chickpeas, tofu, and seitan. Plenty of vegetables.'
+            },
+            'muscle-gain': {
+                'veg': 'Protein-rich paneer, tofu, Greek yogurt, and lentils. Complex carbs like brown rice and oats.',
+                'non-veg': 'Chicken, eggs, salmon, and lean beef. Ensure a calorie surplus with healthy fats and carbs.',
+                'vegan': 'Increase intake of beans, lentils, tempeh, and nuts. Consider a plant-based protein powder.'
+            },
+            'maintenance': {
+                'veg': 'A balanced diet of whole grains, dairy/alternatives, fruits, and vegetables. Monitor portion sizes.',
+                'non-veg': 'A mix of lean proteins, healthy fats, and complex carbs to maintain current weight and energy.',
+                'vegan': 'A varied diet of all plant-based food groups to ensure all nutrient needs are met.'
+            }
+        };
+
+        const tips = [
+            "Consistency is more important than intensity. Stick to your plan!",
+            "Stay hydrated! Drink at least 8-10 glasses of water a day.",
+            "Listen to your body. Rest is crucial for recovery and growth.",
+            "Track your progress to stay motivated and make adjustments.",
+            "Proper form is key to preventing injuries and maximizing results.",
+            "Nutrition is 80% of the game. Fuel your body right."
+        ];
+
+        // --- CORE LOGIC ---
+
+        /**
+         * Generates a fitness plan based on user inputs.
+         * This function simulates an AI by using predefined logic.
+         */
+        function generatePlan(e) {
+            e.preventDefault();
+            
+            // Get user inputs
+            const goal = document.getElementById('goal').value;
+            const experience = document.getElementById('experience').value;
+            const days = parseInt(document.getElementById('days').value);
+            const food = document.getElementById('food').value;
+
+            // --- Generate Workout Plan ---
+            let workoutPlan = ``;
+            let workoutTitle = '';
+
+            // Logic to determine workout split
+            if (days === 3) {
+                workoutTitle = 'Full Body Split';
+                workoutPlan = `
+                    <p class="mb-2">Perform this workout 3 times a week on non-consecutive days (e.g., Mon, Wed, Fri).</p>
+                    <ul class="list-disc list-inside space-y-1 text-muted-light dark:text-muted-dark">
+                        ${exercises.fullBody.slice(0, 5).map(ex => `<li>${ex}: 3 sets of 8-12 reps</li>`).join('')}
+                    </ul>`;
+            } else if (days === 4) {
+                workoutTitle = 'Upper/Lower Split';
+                workoutPlan = `
+                    <p class="mb-2">A great split for building strength and muscle (e.g., Mon: Upper, Tue: Lower, Thu: Upper, Fri: Lower).</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div><strong>Upper Body:</strong><ul class="list-disc list-inside space-y-1 text-muted-light dark:text-muted-dark">${exercises.push.slice(0,3).map(ex => `<li>${ex}</li>`).join('')}${exercises.pull.slice(0,2).map(ex => `<li>${ex}</li>`).join('')}</ul></div>
+                        <div><strong>Lower Body:</strong><ul class="list-disc list-inside space-y-1 text-muted-light dark:text-muted-dark">${exercises.legs.map(ex => `<li>${ex}</li>`).join('')}</ul></div>
+                    </div>`;
+            } else { // 5 days
+                workoutTitle = 'Push/Pull/Legs Split';
+                workoutPlan = `
+                    <p class="mb-2">A classic split for hypertrophy (e.g., Mon: Push, Tue: Pull, Wed: Legs, Thu: Push, Fri: Pull).</p>
+                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div><strong>Push Day:</strong><ul class="list-disc list-inside space-y-1 text-muted-light dark:text-muted-dark">${exercises.push.slice(0,3).map(ex => `<li>${ex}</li>`).join('')}</ul></div>
+                        <div><strong>Pull Day:</strong><ul class="list-disc list-inside space-y-1 text-muted-light dark:text-muted-dark">${exercises.pull.slice(0,3).map(ex => `<li>${ex}</li>`).join('')}</ul></div>
+                        <div><strong>Leg Day:</strong><ul class="list-disc list-inside space-y-1 text-muted-light dark:text-muted-dark">${exercises.legs.slice(0,3).map(ex => `<li>${ex}</li>`).join('')}</ul></div>
+                    </div>`;
+            }
+            
+            // Adjust for experience level
+            let experienceNote = '';
+            if (experience === 'beginner') experienceNote = 'Focus on light weights and perfect form. Rest 60-90 seconds between sets.';
+            if (experience === 'intermediate') experienceNote = 'Challenge yourself with progressive overload. Rest 60 seconds between sets.';
+            if (experience === 'advanced') experienceNote = 'Incorporate advanced techniques like drop sets or supersets. Rest 30-60 seconds.';
+
+            // --- Generate Diet Plan ---
+            const dietPlan = diet[goal][food];
+
+            // --- Generate Motivational Tip ---
+            const randomTip = tips[Math.floor(Math.random() * tips.length)];
+
+            const fullPlan = {
+                workout: { title: workoutTitle, plan: workoutPlan, note: experienceNote },
+                diet: { title: 'Recommended Diet Principles', plan: dietPlan },
+                tip: { title: '💡 Motivational Tip', plan: randomTip },
+                inputs: { goal, experience, days, food }
+            };
+
+            displayPlan(fullPlan);
+            savePlanToLocalStorage(fullPlan);
+        }
+
+        /**
+         * Renders the generated plan to the UI.
+         */
+        function displayPlan(plan) {
+            // Animate the output container into view
+            planPlaceholder.classList.add('hidden');
+            planOutputContainer.classList.remove('hidden');
+            
+            // To re-trigger animation, we remove and add the class
+            const cards = planOutputContainer.querySelectorAll('.plan-card');
+            cards.forEach(card => {
+                card.classList.remove('plan-card');
+                void card.offsetWidth; // Trigger reflow
+                card.classList.add('plan-card');
+            });
+
+            // Populate content
+            workoutOutput.innerHTML = `
+                <h3 class="text-xl font-bold mb-3 text-primary-light dark:text-primary-dark">${plan.workout.title}</h3>
+                ${plan.workout.plan}
+                <p class="mt-4 text-sm italic text-muted-light dark:text-muted-dark">${plan.workout.note}</p>`;
+            
+            dietOutput.innerHTML = `
+                <h3 class="text-xl font-bold mb-3 text-primary-light dark:text-primary-dark">${plan.diet.title}</h3>
+                <p class="text-muted-light dark:text-muted-dark">${plan.diet.plan}</p>`;
+            
+            tipOutput.innerHTML = `
+                <h3 class="text-xl font-bold mb-2 text-yellow-500">${plan.tip.title}</h3>
+                <p class="text-muted-light dark:text-muted-dark italic">"${plan.tip.plan}"</p>`;
+        }
+
+        /**
+         * Logs user progress to the UI and localStorage.
+         */
+        function logProgress() {
+            const note = progressInput.value.trim();
+            if (!note) return;
+
+            const logs = getProgressFromLocalStorage();
+            const newLog = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                text: note
+            };
+            logs.unshift(newLog); // Add to the beginning
+            
+            saveProgressToLocalStorage(logs);
+            renderProgressLogs();
+            progressInput.value = '';
+        }
+
+        /**
+         * Renders all progress logs to the UI.
+         */
+        function renderProgressLogs() {
+            const logs = getProgressFromLocalStorage();
+            progressLogs.innerHTML = logs.map(log => `
+                <div class="bg-background-light dark:bg-background-dark p-3 rounded-lg flex justify-between items-center text-sm">
+                    <span><strong>${log.date}:</strong> ${log.text}</span>
+                    <button data-id="${log.id}" class="delete-log-btn text-red-500 hover:text-red-700">&times;</button>
+                </div>
+            `).join('');
+        }
+
+        /**
+         * Deletes a specific progress log.
+         */
+        function deleteProgressLog(e) {
+            if (!e.target.classList.contains('delete-log-btn')) return;
+            
+            const logId = parseInt(e.target.dataset.id);
+            let logs = getProgressFromLocalStorage();
+            logs = logs.filter(log => log.id !== logId);
+
+            saveProgressToLocalStorage(logs);
+            renderProgressLogs();
+        }
+
+
+        // --- LOCALSTORAGE FUNCTIONS ---
+        const savePlanToLocalStorage = (plan) => localStorage.setItem('fitnessPlan', JSON.stringify(plan));
+        const getPlanFromLocalStorage = () => JSON.parse(localStorage.getItem('fitnessPlan'));
+        const saveProgressToLocalStorage = (logs) => localStorage.setItem('progressLogs', JSON.stringify(logs));
+        const getProgressFromLocalStorage = () => JSON.parse(localStorage.getItem('progressLogs')) || [];
+
+        // --- UTILITY FUNCTIONS ---
+        
+        /**
+         * Exports the current plan and progress to a PDF file.
+         */
+        function exportToPdf() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const plan = getPlanFromLocalStorage();
+            const logs = getProgressFromLocalStorage();
+
+            if (!plan) {
+                alert("Please generate a plan first before exporting.");
+                return;
+            }
+
+            let y = 20; // Y-coordinate for drawing
+            const margin = 15;
+            const maxWidth = doc.internal.pageSize.getWidth() - 2 * margin;
+
+            // Title
+            doc.setFontSize(22);
+            doc.setTextColor(44, 62, 80);
+            doc.text("My AI Fitness Plan", doc.internal.pageSize.getWidth() / 2, y, { align: 'center' });
+            y += 15;
+
+            // Workout Plan
+            doc.setFontSize(16);
+            doc.setTextColor(52, 152, 219);
+            doc.text("Workout Plan: " + plan.workout.title, margin, y);
+            y += 8;
+            doc.setFontSize(11);
+            doc.setTextColor(51, 51, 51);
+            const workoutText = `${workoutOutput.innerText.replace(plan.workout.title, '').trim()}`;
+            const splitWorkoutText = doc.splitTextToSize(workoutText, maxWidth);
+            doc.text(splitWorkoutText, margin, y);
+            y += splitWorkoutText.length * 5 + 10;
+
+            // Diet Plan
+            doc.setFontSize(16);
+            doc.setTextColor(52, 152, 219);
+            doc.text("Diet Plan", margin, y);
+            y += 8;
+            doc.setFontSize(11);
+            doc.setTextColor(51, 51, 51);
+            const splitDietText = doc.splitTextToSize(plan.diet.plan, maxWidth);
+            doc.text(splitDietText, margin, y);
+            y += splitDietText.length * 5 + 10;
+            
+            // Progress Logs
+            if (logs.length > 0) {
+                 doc.setFontSize(16);
+                 doc.setTextColor(46, 204, 113);
+                 doc.text("Progress Log", margin, y);
+                 y += 8;
+                 doc.setFontSize(11);
+                 doc.setTextColor(51, 51, 51);
+                 logs.forEach(log => {
+                     doc.text(`${log.date}: ${log.text}`, margin, y);
+                     y += 6;
+                 });
+            }
+
+            doc.save("AI-Fitness-Plan.pdf");
+        }
+
+        /**
+         * Shares a summary of the plan on WhatsApp.
+         */
+        function shareOnWhatsApp() {
+            const plan = getPlanFromLocalStorage();
+            if (!plan) {
+                 alert("Please generate a plan first before sharing.");
+                return;
+            }
+            const message = `Check out my new fitness plan generated by the AI Fitness Planner!
+            
+Goal: ${plan.inputs.goal}
+Experience: ${plan.inputs.experience}
+Workout: ${plan.workout.title} for ${plan.inputs.days} days/week.
+
+${plan.tip.plan}`;
+
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+
+        // --- THEME TOGGLE ---
+        function handleThemeToggle() {
+            const isDarkMode = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            updateThemeIcons(isDarkMode);
+        }
+
+        function updateThemeIcons(isDarkMode) {
+            themeIconLight.classList.toggle('hidden', isDarkMode);
+            themeIconDark.classList.toggle('hidden', !isDarkMode);
+        }
+
+        // --- INITIALIZATION ---
+        function initializeApp() {
+            // Load theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const isDark = savedTheme === 'dark';
+            document.documentElement.classList.toggle('dark', isDark);
+            updateThemeIcons(isDark);
+
+            // Load saved plan
+            const savedPlan = getPlanFromLocalStorage();
+            if (savedPlan) {
+                // Restore form inputs
+                document.getElementById('goal').value = savedPlan.inputs.goal;
+                document.getElementById('experience').value = savedPlan.inputs.experience;
+                document.getElementById('days').value = savedPlan.inputs.days;
+                document.getElementById('food').value = savedPlan.inputs.food;
+                // Display the plan
+                displayPlan(savedPlan);
+            }
+
+            // Load and render progress logs
+            renderProgressLogs();
+
+            // Setup event listeners
+            fitnessForm.addEventListener('submit', generatePlan);
+            logProgressBtn.addEventListener('click', logProgress);
+            progressLogs.addEventListener('click', deleteProgressLog);
+            themeToggle.addEventListener('click', handleThemeToggle);
+            savePlanBtn.addEventListener('click', () => {
+                const plan = getPlanFromLocalStorage();
+                if (plan) {
+                    alert('Plan saved successfully!');
+                } else {
+                    alert('Generate a plan first to save it.');
+                }
+            });
+            exportPdfBtn.addEventListener('click', exportToPdf);
+            shareWhatsappBtn.addEventListener('click', shareOnWhatsApp);
+        }
+
+        // Run the app
+        initializeApp();
+    });
+    </script>
+</body>
+</html>
