@@ -5,3 +5,4 @@
 ### 4. HTML_Converter ![Image Alt ](https://github.com/gguhanr/WEB-APPLICATION-USING-HTML-CSS-JS/blob/main/HTML_Converter/Screenshot%20(75).png)
 ### 5. Operating System ![Image Alt ](https://github.com/gguhanr/WEB-APPLICATION-USING-HTML-CSS-JS/blob/main/OS/Screenshot%20(77).png)
 ### 6. Modern Interest Calculator  ![Image Alt ](https://github.com/gguhanr/WEB-APPLICATION-USING-HTML-CSS-JS/blob/main/Modern%20Interest%20Calculator/Screenshot%20(92).png)
+### 7. Fitness Planner
