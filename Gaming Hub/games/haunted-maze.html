@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haunted Maze</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Use a spooky font for the title */
+        body {
+            font-family: 'Inter', sans-serif;
+            touch-action: manipulation; /* Prevents double tap to zoom on mobile */
+        }
+        .font-creepster {
+            font-family: 'Creepster', cursive;
+        }
+        /* Custom styles for the game elements */
+        .player-icon::before {
+            content: '👻';
+            font-size: 1.2rem;
+            line-height: 1;
+            display: block;
+            animation: float 1.5s ease-in-out infinite;
+        }
+        .end-icon::before {
+            content: '🎃';
+            font-size: 1.2rem;
+            line-height: 1;
+            display: block;
+        }
+        /* Animation for the player icon */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        /* Ensure the maze grid scales properly */
+        #maze {
+            display: grid;
+            width: 90vw;
+            max-width: 600px;
+            aspect-ratio: 1 / 1; /* Maintain a square shape */
+            border: 4px solid #4a044e;
+            box-shadow: 0 0 20px #9333ea;
+        }
+        .cell {
+            width: 100%;
+            height: 100%;
+        }
+        /* Hide scrollbars */
+        body::-webkit-scrollbar {
+            display: none;
+        }
+        body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-purple-300 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <!-- Game Title and Info -->
+    <div class="text-center mb-4">
+        <h1 class="font-creepster text-5xl md:text-7xl text-purple-500 tracking-wider">Haunted Maze</h1>
+        <p class="text-lg text-gray-400">Find the <span class="font-bold text-orange-400">Pumpkin</span> to escape!</p>
+        <p id="level-display" class="text-xl font-bold mt-2 text-white">Level: 1</p>
+    </div>
+
+    <!-- Maze Container -->
+    <div id="maze" class="bg-gray-800 rounded-lg"></div>
+
+    <!-- On-screen controls for mobile -->
+    <div id="controls" class="mt-6 grid grid-cols-3 gap-3 w-48 md:hidden">
+        <div></div>
+        <button data-key="ArrowUp" class="bg-purple-800/50 text-white rounded-lg p-4 text-2xl active:bg-purple-700 transform active:scale-95">▲</button>
+        <div></div>
+        <button data-key="ArrowLeft" class="bg-purple-800/50 text-white rounded-lg p-4 text-2xl active:bg-purple-700 transform active:scale-95">◀</button>
+        <button data-key="ArrowDown" class="bg-purple-800/50 text-white rounded-lg p-4 text-2xl active:bg-purple-700 transform active:scale-95">▼</button>
+        <button data-key="ArrowRight" class="bg-purple-800/50 text-white rounded-lg p-4 text-2xl active:bg-purple-700 transform active:scale-95">▶</button>
+    </div>
+    <p class="mt-4 hidden md:block text-gray-500">Use Arrow Keys to Move</p>
+
+    <!-- Modal for winning message -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
+        <div class="bg-gray-800 border-2 border-purple-500 rounded-lg p-8 text-center shadow-2xl shadow-purple-500/20 max-w-sm mx-4">
+            <h2 id="modal-title" class="font-creepster text-5xl text-purple-400 mb-4">You Escaped!</h2>
+            <p id="modal-message" class="text-white mb-6">Well done! Are you ready for the next challenge?</p>
+            <button id="modal-button" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-6 rounded-lg text-lg transition-transform transform hover:scale-105">Next Level</button>
+        </div>
+    </div>
+
+    <script>
+        // --- GAME CONFIGURATION ---
+        const mazeContainer = document.getElementById('maze');
+        const levelDisplay = document.getElementById('level-display');
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const modalButton = document.getElementById('modal-button');
+        const controls = document.getElementById('controls');
+
+        // 1: wall, 0: path, 2: end, 3: start
+        const levels = [
+            // Level 1: Easy (8x8)
+            [
+                [1,1,1,1,1,1,1,1],
+                [1,3,0,0,0,0,0,1],
+                [1,1,1,1,1,1,0,1],
+                [1,0,0,0,0,0,0,1],
+                [1,0,1,1,1,1,1,1],
+                [1,0,0,0,0,0,2,1],
+                [1,1,1,1,1,1,1,1],
+                [1,1,1,1,1,1,1,1],
+            ],
+            // Level 2: Medium (10x10)
+            [
+                [1,1,1,1,1,1,1,1,1,1],
+                [1,3,0,1,0,0,0,0,0,1],
+                [1,0,0,1,0,1,1,1,0,1],
+                [1,0,1,1,0,0,0,1,0,1],
+                [1,0,0,0,0,1,0,1,0,1],
+                [1,1,1,1,0,1,0,1,0,1],
+                [1,0,0,1,0,1,0,0,0,1],
+                [1,0,1,1,0,1,1,1,1,1],
+                [1,0,0,0,0,0,0,0,2,1],
+                [1,1,1,1,1,1,1,1,1,1],
+            ],
+            // Level 3: Hard (12x12)
+            [
+                [1,3,1,1,1,1,1,1,1,1,1,1],
+                [1,0,0,0,1,0,0,0,0,0,0,1],
+                [1,0,1,0,1,0,1,1,1,1,0,1],
+                [1,0,1,0,1,0,0,0,0,1,0,1],
+                [1,0,1,1,1,1,1,1,0,1,0,1],
+                [1,0,0,0,0,0,0,1,0,1,0,1],
+                [1,1,1,1,1,0,1,1,0,1,0,1],
+                [1,0,0,0,1,0,1,0,0,1,0,1],
+                [1,0,1,0,1,0,1,0,1,1,0,1],
+                [1,0,1,0,1,0,1,0,1,0,0,1],
+                [1,0,1,0,0,0,1,0,1,0,2,1],
+                [1,1,1,1,1,1,1,1,1,1,1,1],
+            ],
+            // Level 4: Very Hard (15x15)
+            [
+                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                [1,3,0,0,1,0,0,0,1,0,0,0,0,0,1],
+                [1,1,1,0,1,0,1,0,1,0,1,1,1,0,1],
+                [1,0,0,0,1,0,1,0,0,0,1,0,0,0,1],
+                [1,0,1,1,1,0,1,1,1,1,1,0,1,1,1],
+                [1,0,0,0,0,0,0,0,0,0,1,0,1,2,1],
+                [1,1,1,0,1,1,1,1,1,0,1,0,1,0,1],
+                [1,0,0,0,1,0,0,0,1,0,1,0,1,0,1],
+                [1,0,1,1,1,0,1,0,1,1,1,0,1,0,1],
+                [1,0,1,0,0,0,1,0,0,0,0,0,1,0,1],
+                [1,0,1,0,1,1,1,1,1,1,1,1,1,0,1],
+                [1,0,1,0,0,0,0,0,0,0,0,0,0,0,1],
+                [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            ]
+        ];
+
+        let currentLevel = 0;
+        let playerPos = { x: 0, y: 0 };
+
+        // --- GAME LOGIC ---
+
+        function startGame(levelIndex) {
+            currentLevel = levelIndex;
+            const layout = levels[currentLevel];
+            
+            // Find the starting position
+            let startFound = false;
+            for (let y = 0; y < layout.length; y++) {
+                for (let x = 0; x < layout[y].length; x++) {
+                    if (layout[y][x] === 3) {
+                        playerPos = { x, y };
+                        startFound = true;
+                        break;
+                    }
+                }
+                if(startFound) break;
+            }
+            
+            levelDisplay.textContent = `Level: ${currentLevel + 1}`;
+            drawMaze();
+        }
+
+        function drawMaze() {
+            const layout = levels[currentLevel];
+            const gridSize = layout.length;
+            mazeContainer.innerHTML = '';
+            // Dynamically set grid columns based on maze size
+            mazeContainer.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+
+            for (let y = 0; y < gridSize; y++) {
+                for (let x = 0; x < gridSize; x++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell', 'flex', 'items-center', 'justify-center');
+                    
+                    switch(layout[y][x]) {
+                        case 1: // Wall
+                            cell.classList.add('bg-gray-900', 'border', 'border-gray-700');
+                            break;
+                        case 0: // Path
+                        case 3: // Start is also a path
+                            cell.classList.add('bg-gray-800');
+                            break;
+                        case 2: // End
+                            cell.classList.add('bg-gray-800', 'end-icon');
+                            break;
+                    }
+
+                    if (x === playerPos.x && y === playerPos.y) {
+                        cell.classList.add('player-icon');
+                    }
+                    mazeContainer.appendChild(cell);
+                }
+            }
+        }
+
+        function movePlayer(dx, dy) {
+            const layout = levels[currentLevel];
+            const newX = playerPos.x + dx;
+            const newY = playerPos.y + dy;
+
+            // Check boundaries
+            if (newY < 0 || newY >= layout.length || newX < 0 || newX >= layout[0].length) {
+                return;
+            }
+
+            // Check for walls
+            if (layout[newY][newX] === 1) {
+                return;
+            }
+
+            // Update player position
+            playerPos = { x: newX, y: newY };
+            drawMaze();
+
+            // Check for win condition
+            if (layout[newY][newX] === 2) {
+                setTimeout(showWinModal, 200); // Small delay for effect
+            }
+        }
+
+        function showWinModal() {
+            if (currentLevel < levels.length - 1) {
+                // More levels to play
+                modalTitle.textContent = `Level ${currentLevel + 1} Cleared!`;
+                modalMessage.textContent = "You're a master of the maze! Ready for the next one?";
+                modalButton.textContent = "Next Level";
+                modalButton.onclick = () => {
+                    modal.classList.add('hidden');
+                    startGame(currentLevel + 1);
+                };
+            } else {
+                // Game finished
+                modalTitle.textContent = "You Escaped!";
+                modalMessage.textContent = "You've conquered all the haunted mazes. Congratulations!";
+                modalButton.textContent = "Play Again";
+                modalButton.onclick = () => {
+                    modal.classList.add('hidden');
+                    startGame(0);
+                };
+            }
+            modal.classList.remove('hidden');
+        }
+
+        // --- EVENT LISTENERS ---
+
+        // Listen for keyboard input
+        document.addEventListener('keydown', e => {
+            switch (e.key) {
+                case 'ArrowUp': movePlayer(0, -1); break;
+                case 'ArrowDown': movePlayer(0, 1); break;
+                case 'ArrowLeft': movePlayer(-1, 0); break;
+                case 'ArrowRight': movePlayer(1, 0); break;
+            }
+        });
+
+        // Listen for on-screen button clicks
+        controls.addEventListener('click', e => {
+            const button = e.target.closest('button');
+            if (button && button.dataset.key) {
+                switch (button.dataset.key) {
+                    case 'ArrowUp': movePlayer(0, -1); break;
+                    case 'ArrowDown': movePlayer(0, 1); break;
+                    case 'ArrowLeft': movePlayer(-1, 0); break;
+                    case 'ArrowRight': movePlayer(1, 0); break;
+                }
+            }
+        });
+
+        // --- INITIALIZE GAME ---
+        startGame(0);
+
+    </script>
+</body>
+</html>
