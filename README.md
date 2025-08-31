@@ -8,4 +8,4 @@
 ### 7. Fitness Planner ![Image Alt ](https://github.com/gguhanr/WEB-APPLICATION-USING-HTML-CSS-JS/blob/main/Fitness%20Planner/Screenshot%20(94).png)
 ### 8. Gaming Hub ![Image Alt ](https://github.com/gguhanr/WEB-APPLICATION-USING-HTML-CSS-JS/blob/main/Gaming%20Hub/Screenshot%20(95).png)
 ### 9. Medico - 2025 Online Medical Shop  ![Image Alt ](https://github.com/gguhanr/WEB-APPLICATION-USING-HTML-CSS-JS/blob/main/Medico%20-%202025%20Online%20Medical%20Shop/Screenshot%20(99).png)
-### 10. fruit ninja https://github.com/gguhanr/WEB-APPLICATION-USING-HTML-CSS-JS/blob/main/fruit%20ninja/Screenshot%20(101).png
+### 10. fruit ninja ![Image Alt ](https://github.com/gguhanr/WEB-APPLICATION-USING-HTML-CSS-JS/blob/main/fruit%20ninja/Screenshot%20(101).png)
