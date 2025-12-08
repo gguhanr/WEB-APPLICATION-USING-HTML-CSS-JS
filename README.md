@@ -9,7 +9,7 @@ This repository showcases web development projects built exclusively using the f
 Projects are categorized by their complexity and the primary skill they emphasize:
 
 * **1. Personal Portfolio Site:**
-    * **Focus:** Semantic **HTML** structure and creating a visually appealing, responsive layout using modern **CSS** (Flexbox or Grid).
+    * **Focus:** Semantic **HTML** structure and creating a visually appealing, responsive layout using modern **CSS** (Flexbox or Grid). 
     * **Goal:** Demonstrate mastery of responsive design principles.
 * **2. Interactive To-Do List Application:**
     * **Focus:** Heavy **JavaScript** use for **DOM manipulation** (adding, deleting, editing elements) and handling user events.
