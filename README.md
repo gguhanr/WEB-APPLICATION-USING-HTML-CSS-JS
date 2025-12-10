@@ -5,7 +5,7 @@ This repository showcases web development projects built exclusively using the f
 ---
 
 ## 📜 Key Project Categories
-
+ 
 Projects are categorized by their complexity and the primary skill they emphasize:
 
 * **1. Personal Portfolio Site:**
