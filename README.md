@@ -94,4 +94,5 @@ Feel free to fork this repository, improve the projects, and submit a pull reque
 ---
 
 ## 📄 License
-This project is open-source and available under the MIT License.
+Guhan.S 
+
