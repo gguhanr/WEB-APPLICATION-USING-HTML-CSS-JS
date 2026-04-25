@@ -7,31 +7,26 @@ This repository contains a collection of beginner-to-intermediate level web appl
 ## 🚀 Projects List
 
 ### 1. Fitness Planner  
-A simple fitness planning tool to organize workouts and routines.  
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Fitness%20Planner/in  
 
 ---
 
-### 2. HTML Converter  
-Convert and format HTML content easily with this utility tool.  
+### 2. HTML Converter   
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/HTML_Converter/in  
 
 ---
 
 ### 3. Interest Calculator  
-A modern calculator to compute interest with a clean UI.  
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Modern%20Interest%20Calculator/in  
 
 ---
 
 ### 4. Mony Tracker  
-Track your expenses and manage your money efficiently.  
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Mony%20Tracker/test  
 
 ---
 
-### 5. Number Guessing Game  
-A fun interactive game where users guess a randomly generated number.  
+### 5. Number Guessing Game    
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Number%20Guessing%20Game/Number%20Guessing%20Game  
 
 ---
