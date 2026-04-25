@@ -42,25 +42,21 @@ This repository contains a collection of beginner-to-intermediate level web appl
 ---
 
 ### 8. Student QR Form  
-Generate and manage QR-based student forms.  
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Student%20QR%20Form/  
 
 ---
 
-### 9. To-Do List  
-A task management application to organize daily activities.  
+### 9. To-Do List   
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/To%20Do%20List/  
 
 ---
 
 ### 10. Fruit Ninja  
-A browser-based game inspired by the popular Fruit Ninja.  
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/fruit%20ninja/game  
 
 ---
 
 ### 11. VS Code (Web Editor)  
-A web-based code editor inspired by VS Code interface.  
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Online%20Resume%20Builder/VS%20Code/best_team_editor  
 
 ---
