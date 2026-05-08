@@ -1,4 +1,4 @@
-# 🌐 WEB APPLICATIONS USING HTML, CSS & JS
+# 🌐 WEB APPLICATIONS USING HTML, CSS & JS  
   
 This repository contains a collection of beginner-to-intermediate level web applications built using **HTML, CSS, and JavaScript**. Each project demonstrates different concepts such as DOM manipulation, UI design, form handling, and interactive features.
 
