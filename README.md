@@ -5,7 +5,7 @@ This repository contains a collection of beginner-to-intermediate level web appl
 This all are create BEST_TEAM
 ---  
 
-## 🚀 Projects List
+## 🚀 Projects List 
 
 ### 1. Fitness Planner  
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Fitness%20Planner/in  
