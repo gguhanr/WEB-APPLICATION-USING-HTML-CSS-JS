@@ -70,7 +70,9 @@ This repository contains a collection of beginner-to-intermediate level web appl
 
 ---
 ### 14. Bill Splitter
-🔗 **Demo:** 
+🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Bill%20Splitter/bill-splitter
+
+---
 
 ## 🛠️ Technologies Used
 - HTML5  
