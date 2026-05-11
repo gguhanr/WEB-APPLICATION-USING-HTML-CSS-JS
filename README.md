@@ -69,8 +69,8 @@ This repository contains a collection of beginner-to-intermediate level web appl
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/BEST-OS/BestOS
 
 ---
-### 14.Best team image toolkit
-
+### 14. Bill Splitter
+🔗 **Demo:** 
 
 ## 🛠️ Technologies Used
 - HTML5  
