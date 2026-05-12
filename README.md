@@ -4,7 +4,6 @@ This repository contains a collection of beginner-to-intermediate level web appl
   
 ###  This all are create BEST_TEAM
 ---  
-  
 ## 🚀 Projects List 
 
 ### 1. Fitness Planner  
