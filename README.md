@@ -72,6 +72,8 @@ This repository contains a collection of beginner-to-intermediate level web appl
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Bill%20Splitter/bill-splitter
 
 ---
+### 15.SharedWallet
+
 
 ## 🛠️ Technologies Used
 - HTML5  
