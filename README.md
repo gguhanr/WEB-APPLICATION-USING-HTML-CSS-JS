@@ -34,7 +34,7 @@ This repository contains a collection of beginner-to-intermediate level web appl
 ### 6. Resume Builder    
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Online%20Resume%20Builder/  
 
----
+---  
 
 ### 7. Student Data Collection   
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Student%20Data%20Collection/  
