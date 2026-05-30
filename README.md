@@ -19,7 +19,7 @@ This repository contains a collection of beginner-to-intermediate level web appl
 ### 3. Interest Calculator  
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Modern%20Interest%20Calculator/in  
 
----
+---  
 
 ### 4. Mony Tracker  
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Mony%20Tracker/test  
