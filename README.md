@@ -9,7 +9,7 @@ This repository contains a collection of beginner-to-intermediate level web appl
 ### 1. Fitness Planner  
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Fitness%20Planner/in  
  
----
+--- 
 
 ### 2. HTML Converter   
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/HTML_Converter/in  
