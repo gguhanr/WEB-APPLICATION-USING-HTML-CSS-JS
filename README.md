@@ -74,7 +74,10 @@ This repository contains a collection of beginner-to-intermediate level web appl
 ---
 ### 15.SharedWallet
 
-
+---
+### 16. Watermark tool
+https://gguhanr.neocities.org/Web%20Applications%20/watermark%20tool/watermark_tool_v2
+---
 ## 🛠️ Technologies Used
 - HTML5  
 - CSS3  
