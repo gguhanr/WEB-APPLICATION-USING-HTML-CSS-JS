@@ -35,24 +35,18 @@ This repository contains a collection of beginner-to-intermediate level web appl
 ---
 ### 10. Fruit Ninja  
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/fruit%20ninja/game  
-
 ---
-
 ### 11. VS Code (Web Editor)  
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Online%20Resume%20Builder/VS%20Code/best_team_editor  
-
 ---
 ### 12. Video to Audio Converter
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Video%20to%20Audio%20Converter/in
-
 ---
 ### 13.BEST-OS
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/BEST-OS/BestOS
-
 ---
 ### 14. Bill Splitter
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Bill%20Splitter/bill-splitter
-
 ---
 ### 15.SharedWallet
 
