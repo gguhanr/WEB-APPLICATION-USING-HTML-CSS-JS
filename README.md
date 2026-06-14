@@ -20,29 +20,19 @@ This repository contains a collection of beginner-to-intermediate level web appl
 ---
 ### 5. Number Guessing Game    
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Number%20Guessing%20Game/Number%20Guessing%20Game  
-
 ---
-
 ### 6. Resume Builder    
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Online%20Resume%20Builder/  
-
 ---  
-
 ### 7. Student Data Collection   
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Student%20Data%20Collection/  
-
 ---
-
 ### 8. Student QR Form  
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/Student%20QR%20Form/  
-
 ---
-
 ### 9. To-Do List   
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/To%20Do%20List/  
-
 ---
-
 ### 10. Fruit Ninja  
 🔗 **Demo:** https://gguhanr.neocities.org/Web%20Applications%20/fruit%20ninja/game  
 
