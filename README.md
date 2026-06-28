@@ -59,7 +59,7 @@
 ---
 ### 18. QR PAY
 
---
+---
 ## 🛠️ Technologies Used
 - HTML5  
 - CSS3  
