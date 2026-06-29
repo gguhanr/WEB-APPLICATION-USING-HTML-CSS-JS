@@ -58,7 +58,7 @@
 
 ---
 ### 18. QR PAY
-
+https://gguhanr.neocities.org/Web%20Applications%20/QR%20payLink/PayLink%20QR
 ---
 ## 🛠️ Technologies Used
 - HTML5  
