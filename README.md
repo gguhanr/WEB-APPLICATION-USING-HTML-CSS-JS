@@ -3,7 +3,7 @@
    This repository contains a collection of beginner-to-intermediate level web applications built using **HTML, CSS, and JavaScript**. Each project demonstrates different concepts such as DOM manipulation, UI design, form handling, and interactive features.
       
 This all are create BEST_TEAM (2026 New Update ComingSoon......)      
-----                  
+----                    
 ## 🚀 Projects List                               
             
 ### 1. Fitness Planner  
